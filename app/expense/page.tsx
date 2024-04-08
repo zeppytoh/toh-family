@@ -10,11 +10,32 @@ const ExpenseEntry = () => {
 
   const categories = ["Groceries", "Dining", "Transportation", "Utilities"];
 
-  const handleSubmit = (e) => {
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // Handle form submission logic here
+  //   console.log({ date, category, description, amount, currency });
+  // };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log({ date, category, description, amount, currency });
+    try {
+      const response = await fetch("/api/expense", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, category, description, amount, currency }),
+      });
+      if (response.ok) {
+        // Clear form fields on successful submission
+        setDate(new Date().toISOString().slice(0, 10));
+        setCategory("Groceries");
+        setDescription("");
+        setAmount("");
+        setCurrency("JPY");
+      }
+    } catch (error) {
+      console.error("Error saving expense entry:", error);
+    }
   };
+  
 
   return (
     <div className="max-w-sm mx-auto mt-8">
